@@ -10,6 +10,7 @@ PORT = 50000
 if __name__ == "__main__":
     while True:
         serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         serversocket.bind((HOST, PORT))
         print()
         serversocket.listen(5)
@@ -27,17 +28,23 @@ if __name__ == "__main__":
                                      stdout = subprocess.PIPE,
                                      stderr = subprocess.PIPE)
                 stdout, stderr = process.communicate()
-                conn.send(stout)
+                conn.send(stdout)
                 conn.send(stderr)
         elif command == 'ls':
-            print(os.listdir())
-            
+            process = subprocess.Popen('ls',
+                                     stdout = subprocess.PIPE,
+                                     stderr = subprocess.PIPE)
+            stdout, stderr = process.communicate()
+            conn.send(stdout)
+            conn.send(stderr)                    
             response = "\n"
-            for elem in os.listdir():
-                response += str(elem)
-                response += "\n"
-            conn.send(response.encode())
-        conn.close()
+            ##for elem in stdout:
+            ##    response += str(elem)
+            ##    response += "\n"
+            ##conn.send(response.encode())
+        else:
+            conn.send("help".encode()) 
+        ##conn.close()
         
 
 
