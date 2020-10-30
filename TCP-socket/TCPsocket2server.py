@@ -27,7 +27,7 @@ if __name__ == "__main__":
                                      stdout = subprocess.PIPE,
                                      stderr = subprocess.PIPE)
                 stdout, stderr = process.communicate()
-                conn.send(stout)
+                conn.send(stdout)
                 conn.send(stderr)
         elif command == 'ls':
             print(os.listdir())
