@@ -1,5 +1,4 @@
-##ex.1 create an echo server that replies to a client message with the same message
-##server 
+##create an echo server that replies to a client message executing echo/ls/cat/help 
 import socket
 import sys
 import subprocess
@@ -17,11 +16,8 @@ if __name__ == "__main__":
         serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         serversocket.bind((HOST, PORT))
-        print()
         serversocket.listen(5)
         conn, addr = serversocket.accept()
-        print(f"addr: {addr}")
-        print(f"conn: {conn}")
         data = conn.recv(1024)
         data = data.decode()
         if data is None: break
@@ -46,10 +42,6 @@ if __name__ == "__main__":
             conn.send(stdout)
             conn.send(stderr)                    
             response = "\n"
-            ##for elem in stdout:
-            ##    response += str(elem)
-            ##    response += "\n"
-            ##conn.send(response.encode())
         elif command == 'cat':
             cat_cmd=[]
             for elem in data.split():
@@ -62,7 +54,6 @@ if __name__ == "__main__":
             conn.send(stderr)
         else:
             conn.send(help_msg.encode()) 
-        ##conn.close()
         
 
 
