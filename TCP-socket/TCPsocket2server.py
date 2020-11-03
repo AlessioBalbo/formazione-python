@@ -22,40 +22,20 @@ if __name__ == "__main__":
         data = data.decode()
         if data is None: break
         print(data)
-        command = data.split()[0]
-        if command == 'print':
-            echo_msg=[]
-            for elem in data.split()[1:]:
-                echo_msg.append(elem)
-            if len(data.split()) > 1:
-                process = subprocess.Popen(['echo', echo_msg],
-                                     stdout = subprocess.PIPE,
-                                     stderr = subprocess.PIPE)
-                stdout, stderr = process.communicate()
-                conn.send(stdout)
-                conn.send(stderr)
-        elif command == 'ls':
-            process = subprocess.Popen('ls',
-                                     stdout = subprocess.PIPE,
-                                     stderr = subprocess.PIPE)
-            stdout, stderr = process.communicate()
-            conn.send(stdout)
-            conn.send(stderr)                    
-            response = "\n"
-        elif command == 'cat':
-            cat_cmd=[]
-            for elem in data.split():
-                cat_cmd.append(elem)
-            process = subprocess.Popen(cat_cmd,
-                                    stdout = subprocess.PIPE,
-                                    stderr = subprocess.PIPE)
-            stdout, stderr = process.communicate()
-            conn.send(stdout)
-            conn.send(stderr)
-        else:
+        command = data.split(' ',1)   ## single split, separate command from arguments/paths
+        if command[0] == 'print':
+            command-ex('echo', command[1])
+        elif command[0] == 'list':
+            command-ex('ls', command[1])
+        elif command[0] == 'concat':
+            command-ex('cat', command[1])
+        elif command[0] == 'help' 
             conn.send(help_msg.encode()) 
-        
 
-
-
-    
+def command-ex(cmd, args):
+    process = subprocess.Popen([cmd, args],
+                                stdout = subprocess.PIPE,
+                                stderr = subprocess.PIPE)
+    stdout, stderr = process.communicate()
+    conn.send(stdout)
+    conn.send(stderr)
