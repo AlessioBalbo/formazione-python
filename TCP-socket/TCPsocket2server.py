@@ -11,6 +11,14 @@ help_msg = ("command list: \n - print <msg>: echo <msg>\n"
 HOST = ''
 PORT = 50000
 
+def cmdex(cmd, args):
+    process = subprocess.Popen([cmd, args],
+                                stdout = subprocess.PIPE,
+                                stderr = subprocess.PIPE)
+    stdout, stderr = process.communicate()
+    conn.send(stdout)
+    conn.send(stderr)
+
 if __name__ == "__main__":
     while True:
         serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -22,20 +30,17 @@ if __name__ == "__main__":
         data = data.decode()
         if data is None: break
         print(data)
-        command = data.split(' ',1)   ## single split, separate command from arguments/paths
+        command = data.split(' ',1)   ## single split, separate command from arguments/paths 
         if command[0] == 'print':
-            command-ex('echo', command[1])
+            if len(command)<2:command.append("")
+            cmdex('echo', command[1])
         elif command[0] == 'list':
-            command-ex('ls', command[1])
+            if len(command)<2:command.append("./")
+            cmdex('ls', command[1])
         elif command[0] == 'concat':
-            command-ex('cat', command[1])
-        elif command[0] == 'help' 
+            if len(command)<2:command.append("")
+            cmdex('cat', command[1])
+        else: 
             conn.send(help_msg.encode()) 
 
-def command-ex(cmd, args):
-    process = subprocess.Popen([cmd, args],
-                                stdout = subprocess.PIPE,
-                                stderr = subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    conn.send(stdout)
-    conn.send(stderr)
+
